@@ -7,4 +7,4 @@ networks:
 services:
    default:
         ports:
-            - "49998:49998"
+            - "49988:49988"

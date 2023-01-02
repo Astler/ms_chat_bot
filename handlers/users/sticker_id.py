@@ -9,7 +9,6 @@ from keyboards.base_callback_data import cancel_action_callback
 from keyboards.sticker_menu import sticker_keyboard
 from loader import dp
 from utils.misc import rate_limit
-from utils.user_data.data import delete_simple_commands
 
 
 class StickerState(StatesGroup):
@@ -19,9 +18,6 @@ class StickerState(StatesGroup):
 @rate_limit()
 @dp.message_handler(IsPrivate(), commands=["sticker_id"])
 async def get_sticker_id_start(message: types.Message, state: FSMContext):
-    if delete_simple_commands(message.from_user.id):
-        await message.delete()
-
     msg = await message.bot.send_message(message.chat.id, "Жду стикер!", reply_markup=sticker_keyboard)
 
     async with state.proxy() as data:

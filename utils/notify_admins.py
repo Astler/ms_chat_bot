@@ -6,7 +6,7 @@ from utils.admin_data.data import get_a_list
 
 
 async def on_startup_notify(dp: Dispatcher):
-    await send_msg_to_admin(dp, f"Бот Запущен и готов к работе v{version}!")
+    await send_msg_to_admin(dp, f"Бот продуктов запущен и готов к работе v{version}!")
 
 
 async def on_shutdown_notify(dp: Dispatcher):

@@ -5,17 +5,17 @@ from github import GithubException
 
 from loader import repository
 from utils.group_data.group_info import GroupInfo
-from utils.group_data.user import CatUser
+from utils.user_data.user_info import UserInfo
 
 
-def get_cat_user(users: dict, user_id: int):
+def get_user_info(users: dict, user_id: int) -> UserInfo:
     if users.__contains__(str(user_id)):
         user_json = users[str(user_id)]
         print(f"has user = {user_json}")
-        return json.loads(user_json, object_hook=lambda d: CatUser(**d))
+        return json.loads(user_json, object_hook=lambda d: UserInfo(**d))
     else:
         print(f"new user!!")
-        return CatUser(user_id)
+        return UserInfo(user_id)
 
 
 def get_group_info(group_id: int) -> GroupInfo:
@@ -39,19 +39,6 @@ def save_group_dict(group_id: int, group_info: GroupInfo):
         repository.create_file(file_name, "group file", json.dumps(group_info.to_json()))
 
     save_local_dict(group_id, group_info)
-
-
-def get_blocked_links(group_id: int):
-    return get_group_info(group_id).blocked_links
-
-
-def get_delete_commands(group_id: int):
-    return get_group_info(group_id).delete_commands
-
-
-def get_last_settings_msg(group_id: int):
-    return get_group_info(group_id).last_settings_msg_id
-
 
 ### LOCAL ###
 
@@ -90,7 +77,7 @@ def save_local_dict(group_id: int, group_info: GroupInfo):
 ### GITHUB ###
 
 def get_git_group_file(group_id: int):
-    return f"groups/{group_id}.json"
+    return f"product_groups/{group_id}.json"
 
 
 def get_git_dict(group_id: int) -> GroupInfo:

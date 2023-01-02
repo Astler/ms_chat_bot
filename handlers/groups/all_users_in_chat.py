@@ -1,10 +1,10 @@
 from aiogram import types
 
-from handlers.groups.rep_system_group import create_user_mention
 from loader import dp, bot, app
+from utils.misc.common import create_user_mention
 
 
-@dp.message_handler(commands=["all_members", "all_abroad"])
+@dp.message_handler(commands=["members", "abroad"])
 async def users_in_this_chat(message: types.Message):
     all_in_chat = []
 

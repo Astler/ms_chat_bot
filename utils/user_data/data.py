@@ -34,27 +34,6 @@ def save_user_info(user_id: int, user_dict):
     save_local_user_info(user_id, user_dict)
 
 
-def delete_simple_commands(user_id: int):
-    return get_user_info(user_id).delete_simple_command_requests
-
-
-def add_user_channel(user_id: int, channel_id: int):
-    user_dict = get_user_info(user_id)
-    data = user_dict.user_admin_channels
-
-    if not data.__contains__(channel_id):
-        data.append(channel_id)
-
-    user_dict.user_admin_channels = data
-
-    save_user_info(user_id, user_dict)
-
-
-def get_user_channels(user_id: int):
-    user_dict = get_user_info(user_id)
-    return user_dict.user_admin_channels
-
-
 ### LOCAL ###
 
 def get_local_user_info(user_id: int) -> UserInfo:

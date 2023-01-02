@@ -1,12 +1,12 @@
+import asyncio
 import logging
 import os
 
-from aiogram.utils.executor import start_webhook
+import aioschedule as aioschedule
 
 from data.config import (WEBHOOK_URL, WEBHOOK_PATH,
                          WEBAPP_HOST, WEBAPP_PORT)
 from loader import bot, app
-from utils.minecraft.be_version_updater import be_version_push, be_version_get
 from utils.set_bot_commands import set_default_commands
 
 
@@ -15,16 +15,35 @@ async def on_startup(dp):
     await bot.set_webhook(WEBHOOK_URL)
 
     import filters
-    import middlewares
     filters.setup(dp)
-    middlewares.setup(dp)
     logging.info(dp)
-
-    await be_version_push(await be_version_get())
 
     from utils.notify_admins import on_startup_notify
     await on_startup_notify(dp)
     await set_default_commands(dp)
+
+    async def noon_print():
+        await dp.bot.send_message("-1001216924947", "TIME NOON!!!!")
+        print("It's noon!")
+
+    async def test_print():
+        await dp.bot.send_message("-1001216924947", "Time!")
+        print("Test print!")
+
+    async def scheduler():
+        aioschedule.every().day.at("12:00").do(noon_print)
+        while True:
+            await aioschedule.run_pending()
+            await asyncio.sleep(1)
+
+    async def scheduler_test():
+        aioschedule.every().minute.do(test_print)
+        while True:
+            await aioschedule.run_pending()
+            await asyncio.sleep(1)
+
+    asyncio.create_task(scheduler())
+    asyncio.create_task(scheduler_test())
 
 
 async def on_shutdown(dp):
@@ -54,10 +73,5 @@ if __name__ == '__main__':
 
     app.start()
 
-    if "HEROKU" in list(os.environ.keys()):
-        start_webhook(dispatcher=dp, webhook_path=WEBHOOK_PATH,
-                      on_startup=on_startup, on_shutdown=on_shutdown,
-                      host=WEBAPP_HOST, port=WEBAPP_PORT)
-    else:
-        executor.start_polling(dispatcher=dp,
-                               on_startup=on_startup, on_shutdown=on_shutdown, )
+    executor.start_polling(dispatcher=dp,
+                           on_startup=on_startup, on_shutdown=on_shutdown, )

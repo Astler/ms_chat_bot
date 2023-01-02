@@ -5,10 +5,10 @@ from datetime import date
 
 from aiogram import types
 
-from handlers.groups.rep_system_group import create_user_mention, get_cat_user
 from loader import dp, bot, app
-from utils.group_data.data import get_group_info, save_group_dict
-from utils.group_data.user import CatUser
+from utils.group_data.data import get_group_info, save_group_dict, get_user_info
+from utils.misc.common import create_user_mention
+from utils.user_data.user_info import UserInfo
 
 
 @dp.message_handler(commands=["pidor_stats", "ps"])
@@ -21,9 +21,9 @@ async def my_rep(message: types.Message):
     stats = ""
 
     for user_id in all_users:
-        cat_user: CatUser = json.loads(all_users[user_id], object_hook=lambda d: CatUser(**d))
+        cat_user: UserInfo = json.loads(all_users[user_id], object_hook=lambda d: UserInfo(**d))
         try:
-            member = await app.get_chat_member(chat_id, cat_user.user_id)
+            member = await app.get_chat_member(chat_id, cat_user.tg_id)
             if not member.user.is_bot:
                 stats += f"{create_user_mention(member)} был пидором {cat_user.pidor_times} раз\n"
         except Exception as e:
@@ -37,9 +37,6 @@ async def my_rep(message: types.Message):
     chat_id = message.chat.id
 
     group_info = get_group_info(chat_id)
-
-    if not group_info.adult_mode:
-        return
 
     all_in_chat = []
 
@@ -66,7 +63,7 @@ async def my_rep(message: types.Message):
         user_id = random_user.user.id
         pidors[today] = user_id
 
-        users[user_id] = json.dumps(get_cat_user(users, user_id).increment_pidor_counter(), cls=CatUser.CatUserEncoder)
+        users[user_id] = json.dumps(get_user_info(users, user_id).increment_pidor_counter(), cls=UserInfo.UserEncoder)
 
         await bot.send_message(message.chat.id,
                                f"Это {create_user_mention(await message.bot.get_chat_member(chat_id, user_id))}!",
