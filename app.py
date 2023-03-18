@@ -1,49 +1,48 @@
 import asyncio
 import logging
 import os
+import datetime
 
 import aioschedule as aioschedule
 
-from data.config import (WEBHOOK_URL, WEBHOOK_PATH,
-                         WEBAPP_HOST, WEBAPP_PORT)
+from data.config import (WEBHOOK_URL)
+
 from loader import bot, app
 from utils.set_bot_commands import set_default_commands
+from filters import setup as setup_filters
+from utils.notify_admins import on_startup_notify
 
 
 async def on_startup(dp):
     await bot.delete_webhook()
     await bot.set_webhook(WEBHOOK_URL)
 
-    import filters
-    filters.setup(dp)
+    setup_filters(dp)
     logging.info(dp)
 
-    from utils.notify_admins import on_startup_notify
     await on_startup_notify(dp)
     await set_default_commands(dp)
 
-    async def noon_print():
+    asyncio.ensure_future(scheduler_combined())
+
+
+async def combined_print():
+    now = datetime.datetime.now()
+    if now.hour == 12 and now.minute == 0:
         await dp.bot.send_message("-1001216924947", "TIME NOON!!!!")
         print("It's noon!")
-
-    async def test_print():
+    elif now.minute == 0:
+        await dp.bot.send_message("-1001216924947", f"Hours ping {now.hour}")
+    else:
         await dp.bot.send_message("-1001216924947", "Time!")
         print("Test print!")
 
-    async def scheduler():
-        aioschedule.every().day.at("12:00").do(noon_print)
-        while True:
-            await aioschedule.run_pending()
-            await asyncio.sleep(1)
 
-    async def scheduler_test():
-        aioschedule.every().minute.do(test_print)
-        while True:
-            await aioschedule.run_pending()
-            await asyncio.sleep(1)
-
-    asyncio.create_task(scheduler())
-    asyncio.create_task(scheduler_test())
+async def scheduler_combined():
+    aioschedule.every().minute.do(combined_print)
+    while True:
+        await aioschedule.run_pending()
+        await asyncio.sleep(1)
 
 
 async def on_shutdown(dp):
