@@ -6,8 +6,10 @@ import datetime
 import aioschedule as aioschedule
 
 from data.config import (WEBHOOK_URL)
+from handlers.groups.pidor import detect_pidor
 
 from loader import bot, app
+from utils.data.bot_data import get_bot_data
 from utils.set_bot_commands import set_default_commands
 from filters import setup as setup_filters
 from utils.notify_admins import on_startup_notify
@@ -28,14 +30,19 @@ async def on_startup(dp):
 
 async def combined_print():
     now = datetime.datetime.now()
+    bot_data = get_bot_data()
+
     if now.hour == 12 and now.minute == 0:
-        await dp.bot.send_message("-1001216924947", "TIME NOON!!!!")
+        for chatId in bot_data.chats_to_notify:
+            print(f"chatId = {chatId}")
+            await detect_pidor(chatId)
+            await dp.bot.send_message("-1001216924947", "TIME NOON!!!!")
         print("It's noon!")
     elif now.minute == 0:
         await dp.bot.send_message("-1001216924947", f"Hours ping {now.hour}")
     else:
-        await dp.bot.send_message("-1001216924947", "Time!")
-        print("Test print!")
+        for chatId in bot_data.chats_to_notify:
+            print(f"ping chatId = {chatId}")
 
 
 async def scheduler_combined():

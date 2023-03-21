@@ -9,6 +9,11 @@ from utils.misc import rate_limit
 @dp.message_handler(CommandHelp())
 async def bot_help(message: types.Message):
     text = [
+        'GROUPS ONLY',
+        '/start - Инициализация бота с его добавлением в автоматический список',
+        '/stop - Удаление бота из автосписка',
+        '/members - Создаёт сообщение-призыв отметив всех в чате',
+        '/abroad - Читай members',
         'Технические',
         '/id - бот вернет ваш id в TG (только в ЛС!)\n'
     ]

@@ -14,7 +14,7 @@ github = Github(GITHUB_TOKEN)
 repository = github.get_user().get_repo(GITHUB_REPO)
 
 app = Client(
-        "cat_pyro",
+        "Pyro Bot",
         bot_token=BOT_TOKEN,
         api_id=API_ID,
         api_hash=API_HASH
