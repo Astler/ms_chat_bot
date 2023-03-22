@@ -36,10 +36,12 @@ async def combined_print():
         for chatId in bot_data.chats_to_notify:
             print(f"chatId = {chatId}")
             await detect_pidor(chatId)
-            await dp.bot.send_message("-1001216924947", "TIME NOON!!!!")
+            await dp.bot.send_message(chatId, "TIME NOON!!!!")
         print("It's noon!")
     elif now.minute == 0:
-        await dp.bot.send_message("-1001216924947", f"Hours ping {now.hour}")
+        for chatId in bot_data.chats_to_notify:
+            print(f"chatId = {chatId}")
+            await dp.bot.send_message(chatId, f"Hours ping {now.hour}")
     else:
         for chatId in bot_data.chats_to_notify:
             print(f"ping chatId = {chatId}")
