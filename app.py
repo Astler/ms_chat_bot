@@ -40,17 +40,21 @@ async def combined_print():
         print("It's noon!")
     elif now.minute == 0:
         for chatId in bot_data.chats_to_notify:
-            await dp.bot.send_message(chatId, f"Hours ping {now.hour}")
+            await send_message_to_chat_by_id(chatId, f"Hours ping {now.hour}")
     else:
         for chatId in bot_data.chats_to_notify:
-            try:
-                await dp.bot.send_message(chatId, f"Minutes {now.minute}")
-                print(f"ping chatId = {chatId}")
-            except MigrateToChat as e:
-                new_chat_id = e.migrate_to_chat_id
-                print(f"Group migrated to supergroup. Old chat ID: {chatId}, New chat ID: {new_chat_id}")
-                await dp.bot.send_message(new_chat_id, f"Minutes {now.minute}")
-                print(f"ping chatId = {new_chat_id}")
+            await send_message_to_chat_by_id(chatId, f"Minutes {now.minute}")
+
+
+async def send_message_to_chat_by_id(chat_id: int, message: str):
+    try:
+        await dp.bot.send_message(chat_id, message)
+        print(f"ping chatId = {chat_id}")
+    except MigrateToChat as e:
+        new_chat_id = e.migrate_to_chat_id
+        print(f"Group migrated to supergroup. Old chat ID: {chat_id}, New chat ID: {new_chat_id}")
+        await dp.bot.send_message(new_chat_id, message)
+        print(f"ping changed chatId = {new_chat_id}")
 
 
 async def scheduler_combined():
