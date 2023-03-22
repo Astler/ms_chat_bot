@@ -4,7 +4,7 @@ import os
 import datetime
 
 import aioschedule as aioschedule
-
+from aiogram.utils.exceptions import MigrateToChat
 from data.config import (WEBHOOK_URL)
 from handlers.groups.pidor import detect_pidor
 
@@ -40,11 +40,17 @@ async def combined_print():
         print("It's noon!")
     elif now.minute == 0:
         for chatId in bot_data.chats_to_notify:
-            print(f"chatId = {chatId}")
             await dp.bot.send_message(chatId, f"Hours ping {now.hour}")
     else:
         for chatId in bot_data.chats_to_notify:
-            print(f"ping chatId = {chatId}")
+            try:
+                await dp.bot.send_message(chatId, f"Minutes {now.minute}")
+                print(f"ping chatId = {chatId}")
+            except MigrateToChat as e:
+                new_chat_id = e.migrate_to_chat_id
+                print(f"Group migrated to supergroup. Old chat ID: {chatId}, New chat ID: {new_chat_id}")
+                await dp.bot.send_message(new_chat_id, f"Minutes {now.minute}")
+                print(f"ping chatId = {new_chat_id}")
 
 
 async def scheduler_combined():

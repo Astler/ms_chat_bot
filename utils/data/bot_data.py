@@ -1,9 +1,6 @@
 from cat.json.serializable import Serializable
 from cat.utils.files_utils import save_local_json
 from cat.utils.git_utils import push_git_data, get_cached_git
-from loader import repository
-
-from github import GithubException
 
 
 class BotData(Serializable):
@@ -19,7 +16,7 @@ class BotData(Serializable):
 
 
 def get_git_bot_data_file():
-    return f"bot_data.json"
+    return f"product_bot_data.json"
 
 
 def get_bot_data() -> BotData:
