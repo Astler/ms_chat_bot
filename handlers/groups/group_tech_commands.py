@@ -9,3 +9,8 @@ from loader import dp
 async def get_chat_id(message: types.Message):
     await message.delete()
     await message.answer(message.chat.id)
+
+
+@dp.message_handler(IsGroup(), commands=["sticker_id", "id"])
+async def get_chat_id(message: types.Message):
+    await message.delete()

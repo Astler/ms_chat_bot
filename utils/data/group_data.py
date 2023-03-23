@@ -1,21 +1,42 @@
-import os
-
 from cat.json.serializable import Serializable
 from cat.utils.files_utils import save_local_json
 from cat.utils.git_utils import get_cached_git, push_git_data
+from utils.data.user_data import UserData
 
 
 class GroupInfo(Serializable):
     users = {}
     pidors = {}
-    heroes = {}
+    handsome_mens = {}
+
+    def to_json(self):
+        users = {}
+
+        for user_id, user_obj in self.users.items():
+            users[user_id] = user_obj.to_json_str()
+
+        print(users)
+
+        json_dict = self.__dict__.copy()
+        json_dict["users"] = users
+
+        return json_dict
 
     @staticmethod
     def from_json(json_dct: dict):
         info = GroupInfo()
 
-        info.users = json_dct.get("users", info.users)
-        info.heroes = json_dct.get("heroes", info.heroes)
+        raw_users: dict = json_dct.get("users", info.users)
+        print(raw_users)
+        users = {}
+
+        for raw_user_id, data in raw_users.items():
+            print(data)
+            user = UserData.from_json_str(data)
+            users[raw_user_id] = user
+
+        info.users = users
+        info.handsome_mens = json_dct.get("handsome_mens", info.handsome_mens)
         info.pidors = json_dct.get("pidors", info.pidors)
 
         return info

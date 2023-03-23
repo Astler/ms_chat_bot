@@ -8,10 +8,10 @@ from loader import dp
 
 @dp.message_handler(RandomItemFilter())
 async def bot_choose(message: types.Message):
-    msg_text = str(message.text).replace("?", "")[2:].strip()
+    msg_text = str(message.text).replace("?", "")[3:].strip()
 
     if msg_text.startswith(","):
-        msg_text = msg_text[1:]
+        msg_text = msg_text[2:]
 
     variants = msg_text.strip().split(" или ")
 
