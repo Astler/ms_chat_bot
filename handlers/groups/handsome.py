@@ -83,13 +83,13 @@ async def detect_handsome(chat_id: int, skip_if_exist: bool = False):
                 all_in_chat.remove(member)
 
     random_user = random.choice(all_in_chat)
-    user_id = random_user.user.id
+    user_id = str(random_user.user.id)
 
     handsome_mans[today] = user_id
 
     user_data = users.get(user_id, UserData(user_id))
     user_data.increment_handsome_counter()
-    users[user_data.tg_id] = user_data
+    users[user_id] = user_data
 
     await bot.send_message(chat_id,
                            f"Это {create_user_mention(await bot.get_chat_member(chat_id, user_id))}!",

@@ -33,7 +33,7 @@ class GroupInfo(Serializable):
         for raw_user_id, data in raw_users.items():
             print(data)
             user = UserData.from_json_str(data)
-            users[raw_user_id] = user
+            users[str(raw_user_id)] = user
 
         info.users = users
         info.handsome_mens = json_dct.get("handsome_mens", info.handsome_mens)
