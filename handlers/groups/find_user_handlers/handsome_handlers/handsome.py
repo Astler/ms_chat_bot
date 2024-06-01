@@ -4,7 +4,8 @@ from datetime import date
 from aiogram import types
 from aiogram.filters import Command
 
-from handlers.groups.pidor import get_non_bot_chat_members, send_typing_messages
+from handlers.groups.find_user_handlers.find_user_common import get_all_unmarked_users
+from handlers.groups.find_user_handlers.pidor_handlers.pidor import send_typing_messages
 from loader import dp, bot, app
 from utils.data.group_data import save_group_data, get_group_data
 from utils.data.user_data import UserData
@@ -66,20 +67,12 @@ async def detect_handsome(chat_id: int, skip_if_exist: bool = False):
         return
 
     users = group_data.users
-
-    all_in_chat = await get_non_bot_chat_members(chat_id)
-
+    all_in_chat = await get_all_unmarked_users(today, group_data, chat_id)
     selected_messages = random.sample(possible_messages, 4)
     messages = [(msg, 1) for msg in selected_messages]
     messages.append(("Всё, теперь очевидно. Сегодня красавчик...", 1))
 
     await send_typing_messages(chat_id, messages)
-
-    pidors = group_data.pidors
-    if today in pidors:
-        for member in all_in_chat:
-            if member.user.id == pidors[today]:
-                all_in_chat.remove(member)
 
     random_user = random.choice(all_in_chat)
     user_id = str(random_user.user.id)

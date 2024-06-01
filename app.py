@@ -7,7 +7,7 @@ import sys
 import aioschedule as aioschedule
 from aiogram.exceptions import TelegramMigrateToChat
 from data.config import (WEBHOOK_URL)
-from handlers.groups.pidor import detect_pidor
+from handlers.groups.find_user_handlers.pidor_handlers.pidor import detect_pidor
 
 from loader import bot, app, dp
 from utils.data.bot_data import get_bot_data
@@ -33,7 +33,9 @@ async def combined_print():
     now = datetime.datetime.now()
     bot_data = get_bot_data()
 
-    if now.hour == 7 and now.minute == 0:
+    print("EEE2")
+    # if now.hour == 7 and now.minute == 0:
+    if now.minute % 2 == 0:
         for chatId in bot_data.chats_to_notify:
             print(f"chatId = {chatId}")
             await detect_pidor(chatId, skip_if_exist=True)
@@ -86,4 +88,6 @@ async def main() -> None:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    aioschedule.every().minute.do(combined_print)
+    print("EEE")
     asyncio.run(main())
