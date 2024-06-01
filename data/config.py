@@ -43,4 +43,4 @@ if not str(os.getenv('PORT')).__contains__("None"):
     WEBAPP_PORT = os.getenv('PORT', default=8000)
 
 
-version = "0.0.1"
+version = "1.0.0"

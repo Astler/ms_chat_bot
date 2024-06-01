@@ -1,12 +1,12 @@
 from aiogram import types
-from aiogram.dispatcher.filters import CommandHelp
+from aiogram.filters import Command
 
 from loader import dp
 from utils.misc import rate_limit
 
 
 @rate_limit()
-@dp.message_handler(CommandHelp())
+@dp.message(Command("help"))
 async def bot_help(message: types.Message):
     text = [
         'GROUPS ONLY',

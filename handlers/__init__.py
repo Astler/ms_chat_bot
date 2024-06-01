@@ -1,4 +1,3 @@
-from .errors import dp
 from .common import dp
 from .groups import dp
 from .users import dp

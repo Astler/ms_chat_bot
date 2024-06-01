@@ -2,13 +2,14 @@ import asyncio
 import logging
 import os
 import datetime
+import sys
 
 import aioschedule as aioschedule
-from aiogram.utils.exceptions import MigrateToChat
+from aiogram.exceptions import TelegramMigrateToChat
 from data.config import (WEBHOOK_URL)
 from handlers.groups.pidor import detect_pidor
 
-from loader import bot, app
+from loader import bot, app, dp
 from utils.data.bot_data import get_bot_data
 from utils.set_bot_commands import set_default_commands
 from filters import setup as setup_filters
@@ -43,7 +44,7 @@ async def send_message_to_chat_by_id(chat_id: int, message: str):
     try:
         await dp.bot.send_message(chat_id, message)
         print(f"ping chatId = {chat_id}")
-    except MigrateToChat as e:
+    except TelegramMigrateToChat as e:
         new_chat_id = e.migrate_to_chat_id
         print(f"Group migrated to supergroup. Old chat ID: {chat_id}, New chat ID: {new_chat_id}")
         await dp.bot.send_message(new_chat_id, message)
@@ -69,10 +70,7 @@ async def on_shutdown(dp):
     logging.warning("Bot down")
 
 
-if __name__ == '__main__':
-    from aiogram import executor
-    from handlers import dp
-
+async def main() -> None:
     path = os.getcwd() + "/users/"
 
     try:
@@ -82,7 +80,10 @@ if __name__ == '__main__':
     else:
         print("Successfully created the directory %s " % path)
 
-    app.start()
+    await app.start()
+    await dp.start_polling(bot, on_startup=on_startup, on_shutdown=on_shutdown)
 
-    executor.start_polling(dispatcher=dp,
-                           on_startup=on_startup, on_shutdown=on_shutdown, )
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    asyncio.run(main())

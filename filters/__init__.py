@@ -5,6 +5,5 @@ from .private_chat import IsPrivate
 
 
 def setup(dp: Dispatcher):
-    pass
-    dp.filters_factory.bind(IsGroup)
-    dp.filters_factory.bind(IsPrivate)
+    dp.message.bind(IsGroup)
+    dp.message.bind(IsPrivate)

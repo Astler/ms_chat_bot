@@ -1,11 +1,12 @@
 from aiogram import types
+from aiogram.filters import Command
 from pyrogram.errors import ChannelInvalid
 
 from loader import dp, bot, app
 from utils.misc.common import create_user_mention
 
 
-@dp.message_handler(commands=["members", "abroad"])
+@dp.message(Command(commands=["members", "abroad"]))
 async def users_in_this_chat(message: types.Message):
     all_in_chat = []
 

@@ -1,15 +1,15 @@
 from aiogram import types
-from aiogram.dispatcher.filters import AdminFilter
+from aiogram.filters import Command
 
-from loader import dp, bot
+from loader import dp, bot, is_admin_filter
 from utils.data.group_data import save_group_data, get_group_data
 
 
-@dp.message_handler(AdminFilter(), commands=["edit_hero_name", "set_hero_name"])
-async def hero_of_the_day(message: types.Message):
-    new_name = message.get_args()
+@dp.message(Command(commands=["edit_hero_name", "set_hero_name"]), is_admin_filter)
+async def hero_of_the_day(message: types.Message, command: Command):
+    new_name = command.args
 
-    if len(new_name) == 0:
+    if not new_name:
         await bot.send_message(message.chat.id, "Так не сработает. Введите имя сразу после команды в формате: "
                                                 "/set_hero_name Новое имя")
         return

@@ -1,4 +1,5 @@
 from aiogram import types
+from aiogram.filters import Command
 
 from filters import IsGroup
 from loader import dp
@@ -6,7 +7,7 @@ from loader import dp
 from utils.data.bot_data import save_bot_data, get_bot_data
 
 
-@dp.message_handler(IsGroup(), commands=["stop"])
+@dp.message(IsGroup(), Command("stop"))
 async def start_bot(message: types.Message):
     chat_id = message.chat.id
     bot_data = get_bot_data()

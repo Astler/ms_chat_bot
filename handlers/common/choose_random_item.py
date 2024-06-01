@@ -6,7 +6,7 @@ from filters.random_item_filter import RandomItemFilter
 from loader import dp
 
 
-@dp.message_handler(RandomItemFilter())
+@dp.message(RandomItemFilter())
 async def bot_choose(message: types.Message):
     msg_text = str(message.text).replace("?", "")[3:].strip()
 

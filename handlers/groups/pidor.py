@@ -3,6 +3,7 @@ import random
 from datetime import date
 
 from aiogram import types
+from aiogram.filters import Command
 
 from loader import dp, bot, app
 from utils.data.group_data import save_group_data, get_group_data
@@ -25,7 +26,7 @@ async def send_typing_messages(chat_id, messages):
         await asyncio.sleep(delay)
 
 
-@dp.message_handler(commands=["pidor_stats", "ps"])
+@dp.message(Command("pidor_stats"), Command("ps"))
 async def pidor_stats(message: types.Message):
     chat_id = message.chat.id
 
@@ -57,7 +58,7 @@ async def pidor_stats(message: types.Message):
     await message.reply(stats, parse_mode="Markdown")
 
 
-@dp.message_handler(commands=["pidor", "p"])
+@dp.message(Command("pidor"), Command("p"))
 async def pidor(message: types.Message):
     await detect_pidor(message.chat.id)
 

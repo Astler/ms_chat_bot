@@ -1,13 +1,13 @@
 from aiogram import types
+from aiogram.filters import CommandStart
 
 from filters import IsGroup
 from loader import dp
-from aiogram.dispatcher.filters import CommandStart
 
 from utils.data.bot_data import get_bot_data, save_bot_data
 
 
-@dp.message_handler(IsGroup(), CommandStart())
+@dp.message(IsGroup(), CommandStart())
 async def start_bot(message: types.Message):
     chat_id = message.chat.id
     bot_data = get_bot_data()

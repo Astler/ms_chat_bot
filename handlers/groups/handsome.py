@@ -1,9 +1,8 @@
-import asyncio
 import random
 from datetime import date
 
-import pyrogram as pyrogram
 from aiogram import types
+from aiogram.filters import Command
 
 from handlers.groups.pidor import get_non_bot_chat_members, send_typing_messages
 from loader import dp, bot, app
@@ -13,7 +12,7 @@ from utils.misc.common import create_user_mention
 from utils.misc.resources import possible_messages
 
 
-@dp.message_handler(commands=["handsome_stats", "hs"])
+@dp.message(Command(commands=["handsome_stats", "hs"]))
 async def handsome_stats(message: types.Message):
     chat_id = message.chat.id
 
@@ -45,7 +44,7 @@ async def handsome_stats(message: types.Message):
     await message.reply(stats, parse_mode="Markdown")
 
 
-@dp.message_handler(commands=["handsome", "h"])
+@dp.message(Command(commands=["handsome", "h"]))
 async def handsome(message: types.Message):
     await detect_handsome(message.chat.id)
 

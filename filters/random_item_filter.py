@@ -1,7 +1,7 @@
 from aiogram import types
-from aiogram.dispatcher.filters import BoundFilter
+from aiogram.filters import BaseFilter
 
 
-class RandomItemFilter(BoundFilter):
-    async def check(self, message: types.Message):
-        return message.text.lower().startswith("бот") and message.text.lower().__contains__(" или ")
+class RandomItemFilter(BaseFilter):
+    async def __call__(self, message: types.Message) -> bool:
+        return message.text.lower().startswith("бот") and " или " in message.text.lower()

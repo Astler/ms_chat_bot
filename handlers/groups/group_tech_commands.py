@@ -1,16 +1,16 @@
 from aiogram import types
-from aiogram.dispatcher.filters import AdminFilter
+from aiogram.filters import Command
 
 from filters import IsGroup
-from loader import dp
+from loader import dp, is_admin_filter
 
 
-@dp.message_handler(IsGroup(), AdminFilter(), commands=["chat_id"])
+@dp.message(Command(commands=["chat_id"]), IsGroup(), is_admin_filter)
 async def get_chat_id(message: types.Message):
     await message.delete()
-    await message.answer(message.chat.id)
+    await message.answer(str(message.chat.id))
 
 
-@dp.message_handler(IsGroup(), commands=["sticker_id", "id"])
-async def get_chat_id(message: types.Message):
+@dp.message(Command(commands=["sticker_id", "id"]), IsGroup())
+async def get_sticker_id(message: types.Message):
     await message.delete()
