@@ -18,7 +18,10 @@ async def detect_pidor(chat_id: int, skip_if_exist: bool = False):
     def update_guys(pidors):
         group_data.pidors = pidors
 
-    await detect_template(chat_id, "пидор", group_data.pidors, update_guys, skip_if_exist)
+    def increment(user):
+        user.increment_pidor_counter()
+
+    await detect_template(chat_id, "пидор", group_data.pidors, increment, update_guys, skip_if_exist)
 
 
 @pidor_router.message(Command(commands=["pidor_stats", "ps"]))

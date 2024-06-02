@@ -19,7 +19,7 @@ async def detect_anime(chat_id: int, skip_if_exist: bool = False):
         group_data.anime_guys = anime_guys
 
     def increment(user):
-        user.increment_pidor_counter()
+        user.increment_anime_counter()
 
     await detect_template(chat_id, "анимешник", group_data.anime_guys, increment, update_guys, skip_if_exist)
 
