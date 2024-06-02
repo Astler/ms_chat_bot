@@ -7,6 +7,7 @@ from utils.data.user_data import UserData
 class GroupInfo(Serializable):
     users = {}
     pidors = {}
+    anime_guys = {}
     handsome_mens = {}
 
     def to_json(self):
@@ -37,6 +38,7 @@ class GroupInfo(Serializable):
 
         info.users = users
         info.handsome_mens = json_dct.get("handsome_mens", info.handsome_mens)
+        info.anime_guys = json_dct.get("anime_guys", info.anime_guys)
         info.pidors = json_dct.get("pidors", info.pidors)
 
         return info

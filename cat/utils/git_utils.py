@@ -2,12 +2,12 @@ from github import GithubException
 
 from cat.json.serializable import Serializable
 from cat.utils.files_utils import save_local_file, save_local_json
-from loader import repository
 
 
 def push_git_data(file_path: str, serializable: Serializable):
     json_str = serializable.to_json_str()
 
+    from loader import repository
     try:
         contents = repository.get_contents(file_path)
         repository.update_file(file_path, f"info: {file_path}", json_str, contents.sha)
@@ -20,6 +20,7 @@ def push_git_data(file_path: str, serializable: Serializable):
 def get_cached_git(path_to_file: str, fallback_data: Serializable):
     data = fallback_data
 
+    from loader import repository
     try:
         file = repository.get_contents(path_to_file)
         contents = file.decoded_content.decode()

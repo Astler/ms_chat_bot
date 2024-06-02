@@ -6,6 +6,7 @@ from cat.utils.git_utils import get_cached_git, push_git_data
 class UserData(Serializable):
     pidor_times = 0
     handsome_times = 0
+    anime_times = 0
     tg_id = ""
 
     def __init__(self, user_id=0):
@@ -17,12 +18,17 @@ class UserData(Serializable):
 
         info.pidor_times = json_dct.get("pidor_times", info.pidor_times)
         info.handsome_times = json_dct.get("handsome_times", info.handsome_times)
+        info.anime_times = json_dct.get("anime_times", info.anime_times)
         info.tg_id = json_dct.get("tg_id", info.tg_id)
 
         return info
 
     def increment_pidor_counter(self):
         self.pidor_times += 1
+        return self
+
+    def increment_anime_counter(self):
+        self.anime_times += 1
         return self
 
     def increment_handsome_counter(self):

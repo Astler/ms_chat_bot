@@ -3,10 +3,10 @@ import random
 from aiogram import types
 
 from filters.random_item_filter import RandomItemFilter
-from loader import dp
+from loader import main_router
 
 
-@dp.message(RandomItemFilter())
+@main_router.message(RandomItemFilter())
 async def bot_choose(message: types.Message):
     msg_text = str(message.text).replace("?", "")[3:].strip()
 

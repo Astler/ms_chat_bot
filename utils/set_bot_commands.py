@@ -1,11 +1,11 @@
-from aiogram import types
+from aiogram.types import BotCommand
 
 
-async def set_default_commands(dp):
-    await dp.bot.set_my_commands([
-        types.BotCommand("abroad", "Все на борт!"),
-        types.BotCommand("handsome", "Красавчик дня"),
-        types.BotCommand("pidor", "Пидор дня"),
-        types.BotCommand("handsome_stats", "Статистика красавчиков"),
-        types.BotCommand("pidor_stats", "Статистика пидоров"),
+async def set_default_commands(bot):
+    await bot.set_my_commands([
+        BotCommand("abroad", "Все на борт!"),
+        BotCommand("handsome", "Красавчик дня"),
+        BotCommand("pidor", "Пидор дня"),
+        BotCommand("handsome_stats", "Статистика красавчиков"),
+        BotCommand("pidor_stats", "Статистика пидоров"),
     ])

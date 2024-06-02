@@ -16,6 +16,7 @@ async def on_shutdown_notify(dp: Dispatcher):
 async def send_msg_to_admin(dp: Dispatcher, msg: str):
     for admin in get_a_list():
         try:
-            await dp.bot.send_message(admin, msg)
+            from loader import main_bot
+            await main_bot.send_message(admin, msg)
         except Exception as err:
             logging.exception(err)

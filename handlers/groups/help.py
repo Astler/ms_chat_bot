@@ -1,12 +1,14 @@
-from aiogram import types
+from aiogram import types, Router
 from aiogram.filters import Command
 
-from loader import dp
+from filters import IsPrivate
 from utils.misc import rate_limit
+
+help_router = Router()
 
 
 @rate_limit()
-@dp.message(Command("help"))
+@help_router.message(Command("help"), IsPrivate())
 async def bot_help(message: types.Message):
     text = [
         'GROUPS ONLY',
@@ -16,21 +18,15 @@ async def bot_help(message: types.Message):
         '/members - Создаёт сообщение-призыв отметив всех в чате',
         '/abroad - Читай members',
         '',
-        '/pidor_stats - Статистика по пидорам',
-        '/ps - Читай pidor_stats',
+        '/ps - Статистика по пидорам',
+        '/p - Поиск пидора',
         '',
-        '/pidor - Поиск пидора',
-        '/p - Читай pidor',
+        '/hs - Статистика по красавчикам',
+        '/h - Поиск красавчика',
         '',
-        '/handsome_stats - Статистика по красавчикам',
-        '/hs - Читай handsome_stats',
-        '',
-        '/handsome - Поиск красавчика',
-        '/h - Читай handsome',
-        '',
-        '/chat_id - Отображает айди этого чата',
         '',
         'Технические',
+        '/chat_id - Отображает айди этого чата',
         '/id - бот вернет ваш id в TG (только в ЛС!)'
         '/sticker_id - тул для получения айди стикеров (только в ЛС!)'
     ]

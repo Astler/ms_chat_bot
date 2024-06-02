@@ -27,6 +27,7 @@ APPS_DATA_ROOT_URL = os.getenv('APPS_DATA_ROOT_URL')
 
 CERT_PATH = os.getenv('CERT_PATH')
 PROJECT_ID = os.getenv('PROJECT_ID')
+TRIGGER_HOURS = int(os.getenv('TRIGGER_HOURS'))
 
 if not BOT_TOKEN:
     print('You have forgot to set BOT_TOKEN ' + str(BOT_TOKEN) + '?')

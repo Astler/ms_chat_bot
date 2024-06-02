@@ -153,3 +153,5 @@ dmypy.json
 /Pyro Bot.session
 /Pyro Bot.session-journal
 /product_bot_data.json
+/.idea/dataSources.local.xml
+/.idea/dataSources.xml

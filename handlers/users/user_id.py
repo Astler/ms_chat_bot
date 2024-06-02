@@ -7,7 +7,7 @@ from utils.misc import rate_limit
 
 
 @rate_limit()
-@dp.message(IsPrivate(), Command("id"))
+@main_router.message(IsPrivate(), Command("id"))
 async def get_my_id(message: types.Message):
     await message.answer(f'Ваш id: {message.from_user.id}')
 
