@@ -15,13 +15,10 @@ async def anime(message: types.Message):
 async def detect_anime(chat_id: int, skip_if_exist: bool = False):
     group_data = get_group_data(chat_id)
 
-    def update_guys(anime_guys):
-        group_data.anime_guys = anime_guys
-
     def increment(user):
         user.increment_anime_counter()
 
-    await detect_template(chat_id, "анимешник", group_data.anime_guys, increment, update_guys, skip_if_exist)
+    await detect_template(chat_id, "анимешник", group_data.anime_guys, increment, skip_if_exist)
 
 
 @anime_router.message(Command(commands=["anime_stats", "as"]))

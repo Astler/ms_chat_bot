@@ -14,14 +14,10 @@ async def handsome(message: types.Message):
 
 async def detect_handsome(chat_id: int, skip_if_exist: bool = False):
     group_data = get_group_data(chat_id)
-
-    def update_guys(handsome_mens):
-        group_data.handsome_mens = handsome_mens
-
     def increment(user):
         user.increment_handsome_counter()
 
-    await detect_template(chat_id, "красавчик", group_data.handsome_mens, increment, update_guys, skip_if_exist)
+    await detect_template(chat_id, "красавчик", group_data.handsome_mens, increment, skip_if_exist)
 
 
 @handsome_router.message(Command(commands=["handsome_stats", "hs"]))
