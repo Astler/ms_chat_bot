@@ -12,12 +12,14 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from handlers.groups.find_user_handlers.pidor_handlers.pidor import detect_pidor, pidor_router
 from utils import on_startup_notify
 from utils.data.bot_data import get_bot_data
+from utils.set_bot_commands import set_default_commands
 
 
 async def on_startup():
     print("on_startup")
     logging.info(main_dispatcher)
 
+    await set_default_commands()
     await on_startup_notify(main_dispatcher)
     start_scheduler()
 
