@@ -2,7 +2,7 @@ from aiogram import types, Router
 from aiogram.filters import Command
 
 from handlers.groups.find_user_handlers.find_user_common import detect_template, detect_stats_template
-from utils.data.group_data import get_group_data
+from utils.data.group_data import get_group_data, save_group_data
 
 handsome_router = Router()
 
@@ -14,10 +14,13 @@ async def handsome(message: types.Message):
 
 async def detect_handsome(chat_id: int, skip_if_exist: bool = False):
     group_data = get_group_data(chat_id)
-    def increment(user):
-        user.increment_handsome_counter()
 
-    await detect_template(chat_id, "красавчик", group_data.handsome_mens, increment, skip_if_exist)
+    def increment(user, handsome_mens):
+        user.increment_handsome_counter()
+        group_data.handsome_mens = handsome_mens
+        save_group_data(chat_id, group_data)
+
+    await detect_template(chat_id, "красавчик", group_data, group_data.handsome_mens, increment, skip_if_exist)
 
 
 @handsome_router.message(Command(commands=["handsome_stats", "hs"]))

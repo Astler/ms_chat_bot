@@ -2,7 +2,7 @@ from aiogram import types, Router
 from aiogram.filters import Command
 
 from handlers.groups.find_user_handlers.find_user_common import detect_template, detect_stats_template
-from utils.data.group_data import get_group_data
+from utils.data.group_data import get_group_data, save_group_data
 
 pidor_router = Router()
 
@@ -15,10 +15,12 @@ async def pidor(message: types.Message):
 async def detect_pidor(chat_id: int, skip_if_exist: bool = False):
     group_data = get_group_data(chat_id)
 
-    def increment(user):
+    def increment(user, pidors):
         user.increment_pidor_counter()
+        group_data.pidors = pidors
+        save_group_data(chat_id, group_data)
 
-    await detect_template(chat_id, "пидор", group_data.pidors, increment, skip_if_exist)
+    await detect_template(chat_id, "пидор", group_data, group_data.pidors, increment, skip_if_exist)
 
 
 @pidor_router.message(Command(commands=["pidor_stats", "ps"]))

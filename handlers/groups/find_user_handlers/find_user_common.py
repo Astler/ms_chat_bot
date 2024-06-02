@@ -5,7 +5,7 @@ from datetime import date
 from aiogram.types import Message
 
 from loader import pyro_client, main_bot
-from utils.data.group_data import save_group_data, get_group_data
+from utils.data.group_data import save_group_data, get_group_data, GroupInfo
 from utils.data.user_data import UserData
 from utils.misc.common import create_user_mention
 from utils.misc.resources import possible_messages
@@ -49,8 +49,8 @@ async def get_all_unmarked_users(today, group_data, chat_id) -> list:
     return all_in_chat
 
 
-async def detect_template(chat_id: int, title: str, data_set: dict, increment, skip_if_exist: bool = False):
-    group_data = get_group_data(chat_id)
+async def detect_template(chat_id: int, title: str, group_data: GroupInfo, data_set: dict, increment,
+                          skip_if_exist: bool = False):
     today = str(date.today())
 
     if today in data_set:
@@ -81,16 +81,13 @@ async def detect_template(chat_id: int, title: str, data_set: dict, increment, s
     user_id = str(random_user.user.id)
 
     data_set[today] = user_id
-
     user_data = users.get(user_id, UserData(user_id))
-    increment(user_data)
     users[user_id] = user_data
+    increment(user_data, data_set)
 
     await main_bot.send_message(chat_id,
                                 f"Это {create_user_mention(await main_bot.get_chat_member(chat_id, user_id))}!",
                                 parse_mode="Markdown")
-
-    save_group_data(chat_id, group_data)
 
 
 async def detect_stats_template(message: Message, title: str, selector):
