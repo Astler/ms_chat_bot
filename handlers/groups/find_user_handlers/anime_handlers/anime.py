@@ -18,7 +18,7 @@ async def detect_anime(chat_id: int, skip_if_exist: bool = False):
         group_data.anime_guys = anime_guys
 
     def data_selector(group_data):
-        return group_data.handsome_mens
+        return group_data.anime_guys
 
     await detect_template(chat_id, "анимешник", data_selector, increment, skip_if_exist)
 
