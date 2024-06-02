@@ -28,25 +28,20 @@ async def send_typing_messages(chat_id, messages):
 async def get_all_unmarked_users(today, group_data, chat_id) -> list:
     all_in_chat = await get_non_bot_chat_members(chat_id)
 
-    handsome_mens = group_data.handsome_mens
-    if today in handsome_mens:
-        for member in all_in_chat:
-            if member.user.id.__eq__(handsome_mens[today]):
-                all_in_chat.remove(member)
+    marked_users = set()
 
-    pidors = group_data.pidors
-    if today in pidors:
-        for member in all_in_chat:
-            if member.user.id.__eq__(pidors[today]):
-                all_in_chat.remove(member)
+    if today in group_data.handsome_mens:
+        marked_users.add(group_data.handsome_mens[today])
 
-    anime_guys = group_data.anime_guys
-    if today in anime_guys:
-        for member in all_in_chat:
-            if member.user.id.__eq__(anime_guys[today]):
-                all_in_chat.remove(member)
+    if today in group_data.pidors:
+        marked_users.add(group_data.pidors[today])
 
-    return all_in_chat
+    if today in group_data.anime_guys:
+        marked_users.add(group_data.anime_guys[today])
+
+    unmarked_users = [member for member in all_in_chat if str(member.user.id) not in marked_users]
+
+    return unmarked_users
 
 
 async def detect_template(chat_id: int, title: str, group_data: GroupInfo, data_set: dict, increment,
