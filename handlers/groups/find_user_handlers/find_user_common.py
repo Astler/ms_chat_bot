@@ -44,9 +44,11 @@ async def get_all_unmarked_users(today, group_data, chat_id) -> list:
     return unmarked_users
 
 
-async def detect_template(chat_id: int, title: str, group_data: GroupInfo, data_set: dict, increment,
-                          skip_if_exist: bool = False):
+async def detect_template(chat_id: int, title: str, data_selector, increment, skip_if_exist: bool = False):
     today = str(date.today())
+    group_data = get_group_data(chat_id)
+
+    data_set: dict = data_selector(group_data)
 
     if today in data_set:
         if skip_if_exist:
@@ -78,11 +80,13 @@ async def detect_template(chat_id: int, title: str, group_data: GroupInfo, data_
     data_set[today] = user_id
     user_data = users.get(user_id, UserData(user_id))
     users[user_id] = user_data
-    increment(user_data, data_set)
+    increment(group_data, user_data, data_set)
 
     await main_bot.send_message(chat_id,
                                 f"Это {create_user_mention(await main_bot.get_chat_member(chat_id, user_id))}!",
                                 parse_mode="Markdown")
+
+    save_group_data(chat_id, group_data)
 
 
 async def detect_stats_template(message: Message, title: str, selector):

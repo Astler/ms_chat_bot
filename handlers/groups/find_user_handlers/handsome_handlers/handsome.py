@@ -13,14 +13,14 @@ async def handsome(message: types.Message):
 
 
 async def detect_handsome(chat_id: int, skip_if_exist: bool = False):
-    group_data = get_group_data(chat_id)
-
-    def increment(user, handsome_mens):
-        user.increment_handsome_counter()
+    def increment(group_data, user, handsome_mens):
+        user.increment_pidor_counter()
         group_data.handsome_mens = handsome_mens
-        save_group_data(chat_id, group_data)
 
-    await detect_template(chat_id, "красавчик", group_data, group_data.handsome_mens, increment, skip_if_exist)
+    def data_selector(group_data):
+        return group_data.handsome_mens
+
+    await detect_template(chat_id, "красавчик", data_selector, increment, skip_if_exist)
 
 
 @handsome_router.message(Command(commands=["handsome_stats", "hs"]))

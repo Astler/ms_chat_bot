@@ -13,14 +13,15 @@ async def pidor(message: types.Message):
 
 
 async def detect_pidor(chat_id: int, skip_if_exist: bool = False):
-    group_data = get_group_data(chat_id)
 
-    def increment(user, pidors):
+    def increment(group_data, user, pidors):
         user.increment_pidor_counter()
         group_data.pidors = pidors
-        save_group_data(chat_id, group_data)
 
-    await detect_template(chat_id, "пидор", group_data, group_data.pidors, increment, skip_if_exist)
+    def data_selector(group_data):
+        return group_data.pidors
+
+    await detect_template(chat_id, "пидор", data_selector, increment, skip_if_exist)
 
 
 @pidor_router.message(Command(commands=["pidor_stats", "ps"]))
