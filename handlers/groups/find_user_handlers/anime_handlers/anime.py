@@ -14,7 +14,7 @@ async def anime(message: types.Message):
 
 async def detect_anime(chat_id: int, skip_if_exist: bool = False):
     def increment(group_data, user, anime_guys):
-        user.increment_pidor_counter()
+        user.increment_anime_counter()
         group_data.anime_guys = anime_guys
 
     def data_selector(group_data):

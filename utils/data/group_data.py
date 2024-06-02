@@ -5,18 +5,22 @@ from utils.data.user_data import UserData
 
 
 class GroupInfo(Serializable):
-    users = {}
-    pidors = {}
-    anime_guys = {}
-    handsome_mens = {}
+
+    @staticmethod
+    def instance(json_dct: dict):
+        return GroupInfo()
+
+    def __init__(self):
+        self.users = {}
+        self.pidors = {}
+        self.anime_guys = {}
+        self.handsome_mens = {}
 
     def to_json(self):
         users = {}
 
         for user_id, user_obj in self.users.items():
             users[user_id] = user_obj.to_json_str()
-
-        print(users)
 
         json_dict = self.__dict__.copy()
         json_dict["users"] = users
@@ -28,11 +32,9 @@ class GroupInfo(Serializable):
         info = GroupInfo()
 
         raw_users: dict = json_dct.get("users", info.users)
-        print(raw_users)
         users = {}
 
         for raw_user_id, data in raw_users.items():
-            print(data)
             user = UserData.from_json_str(data)
             users[str(raw_user_id)] = user
 
@@ -49,7 +51,8 @@ def get_group_file(group_id: int):
 
 
 def get_group_data(group_id: int) -> GroupInfo:
-    return get_cached_git(get_group_file(group_id), GroupInfo())
+    file = get_group_file(group_id)
+    return get_cached_git(file, GroupInfo.from_json_str)
 
 
 def save_group_data(group_id: int, group_info: GroupInfo):

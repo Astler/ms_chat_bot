@@ -22,4 +22,4 @@ def save_local_file(file_path: str, file_data: str):
 
     with open(file_path, 'w') as f:
         f.write(file_data)
-        print(f"write {file_data}")
+        print(f"write {file_path} {file_data}")

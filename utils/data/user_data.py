@@ -4,13 +4,15 @@ from cat.utils.git_utils import get_cached_git, push_git_data
 
 
 class UserData(Serializable):
-    pidor_times = 0
-    handsome_times = 0
-    anime_times = 0
-    tg_id = ""
-
     def __init__(self, user_id=0):
+        self.pidor_times = 0
+        self.handsome_times = 0
+        self.anime_times = 0
         self.tg_id = user_id
+
+    @staticmethod
+    def instance(json_dct: dict):
+        return UserData()
 
     @staticmethod
     def from_json(json_dct: dict):
@@ -40,8 +42,8 @@ def get_user_file(user_id: int):
     return f"users/{user_id}.json"
 
 
-def get_user_data(group_id: int) -> UserData:
-    return get_cached_git(get_user_file(group_id), UserData())
+def get_user_data(user_id: int) -> UserData:
+    return get_cached_git(get_user_file(user_id), UserData.from_json_str)
 
 
 def save_user_data(user_id: int, user_info: UserData):

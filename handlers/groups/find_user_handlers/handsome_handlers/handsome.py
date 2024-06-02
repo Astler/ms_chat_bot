@@ -14,7 +14,7 @@ async def handsome(message: types.Message):
 
 async def detect_handsome(chat_id: int, skip_if_exist: bool = False):
     def increment(group_data, user, handsome_mens):
-        user.increment_pidor_counter()
+        user.increment_handsome_counter()
         group_data.handsome_mens = handsome_mens
 
     def data_selector(group_data):
