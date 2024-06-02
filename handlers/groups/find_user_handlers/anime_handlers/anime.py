@@ -15,6 +15,8 @@ async def anime(message: types.Message):
 async def detect_anime(chat_id: int, skip_if_exist: bool = False):
     group_data = get_group_data(chat_id)
 
+    print(chat_id)
+
     def increment(user, anime_guys):
         user.increment_anime_counter()
         group_data.anime_guys = anime_guys

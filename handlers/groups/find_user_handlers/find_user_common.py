@@ -13,7 +13,7 @@ from utils.misc.resources import possible_messages
 
 async def get_non_bot_chat_members(chat_id):
     non_bot_members = []
-    async for member in pyro_client.get_chat_members(chat_id):
+    async for member in pyro_client.get_chat_members(int(chat_id)):
         if not member.user.is_bot:
             non_bot_members.append(member)
     return non_bot_members
