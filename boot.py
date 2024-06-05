@@ -27,18 +27,18 @@ async def on_startup():
 async def combined_print():
     print("combined_print")
     bot_data = get_bot_data()
-
-    print("EEE2")
     for chatId in bot_data.chats_to_notify:
-        print(f"chatId = {chatId}")
-        await detect_pidor(chatId, skip_if_exist=True)
-        await main_bot.send_message(chatId, "Morning sunshine! 🌞")
+        try:
+            await detect_pidor(chatId, skip_if_exist=True)
+            await main_bot.send_message(chatId, "Morning sunshine! 🌞")
+        except Exception as e:
+            logging.error(f"Error occurred while sending morning message to chat {chatId}: {e}")
 
 
 def start_scheduler():
     scheduler = AsyncIOScheduler()
-    # scheduler.add_job(combined_print, IntervalTrigger(seconds=10))
-    scheduler.add_job(combined_print, CronTrigger(hour=TRIGGER_HOURS))
+    scheduler.add_job(combined_print, IntervalTrigger(seconds=10))
+    # scheduler.add_job(combined_print, CronTrigger(minute=1))
     current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"Scheduler started at server time: {current_time}")
     scheduler.start()

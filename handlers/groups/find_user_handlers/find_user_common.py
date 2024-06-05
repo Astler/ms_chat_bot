@@ -13,9 +13,14 @@ from utils.misc.resources import possible_messages
 
 async def get_non_bot_chat_members(chat_id):
     non_bot_members = []
-    async for member in pyro_client.get_chat_members(int(chat_id)):
-        if not member.user.is_bot:
-            non_bot_members.append(member)
+    try:
+        from loader import pyro_client
+        async for member in pyro_client.get_chat_members(int(chat_id)):
+            if not member.user.is_bot:
+                non_bot_members.append(member)
+    except Exception as e:
+        print(f"An error occurred while retrieving chat members: {e}")
+
     return non_bot_members
 
 
