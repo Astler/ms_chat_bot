@@ -37,8 +37,8 @@ async def combined_print():
 
 def start_scheduler():
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(combined_print, IntervalTrigger(seconds=10))
-    # scheduler.add_job(combined_print, CronTrigger(minute=1))
+    # scheduler.add_job(combined_print, IntervalTrigger(seconds=10))
+    scheduler.add_job(combined_print, CronTrigger(hour=TRIGGER_HOURS))
     current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"Scheduler started at server time: {current_time}")
     scheduler.start()
