@@ -21,9 +21,6 @@ async def detect_template(chat_id: int, title: str, data_selector, increment, sk
     today = str(date.today())
     group_data = GroupInfo.load(chat_id)
 
-    if title in group_data.locks and group_data.locks[title]:
-        return
-
     data_set: dict = data_selector(group_data)
 
     if today in data_set:
