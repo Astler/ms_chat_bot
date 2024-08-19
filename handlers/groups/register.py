@@ -9,7 +9,7 @@ from utils.data.group_data import GroupInfo
 register_router = Router()
 
 
-@register_router.message(IsGroup(), IsSpecificUser(my_id), Command(commands=["join"]))
+@register_router.message(IsGroup(), Command(commands=["join"]))
 async def join_command(message: types.Message, command: CommandObject):
     chat_id = message.chat.id
     group_data = GroupInfo.load(chat_id)
@@ -23,7 +23,7 @@ async def join_command(message: types.Message, command: CommandObject):
         await message.reply("Added to registered users list!")
 
 
-@register_router.message(IsGroup(), IsSpecificUser(my_id), Command(commands=["leave"]))
+@register_router.message(IsGroup(), Command(commands=["leave"]))
 async def leave_command(message: types.Message, command: CommandObject):
     chat_id = message.chat.id
     group_data = GroupInfo.load(chat_id)
