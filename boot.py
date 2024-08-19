@@ -14,6 +14,7 @@ from utils.data.bot_data import BotData
 from utils.set_bot_commands import set_default_commands
 
 
+
 async def on_startup():
     logging.info(main_dispatcher)
 

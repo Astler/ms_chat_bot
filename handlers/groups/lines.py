@@ -29,3 +29,24 @@ async def lines_command(message: types.Message, command: CommandObject):
     else:
         await message.reply("Add lines keys to select them!")
 
+
+@lines_router.message(IsGroup(), is_admin_filter, Command(commands=["add_line"]))
+async def add_line_command(message: types.Message, command: CommandObject):
+    bot_data = BotData.load()
+
+    if command.args:
+        args = command.args.split(' ', 1)
+        if len(args) == 2:
+            key, value = args[0].lower(), args[1].strip()
+
+            if key in bot_data.lines_keys:
+                bot_data.lines_keys[key].append(value)
+            else:
+                bot_data.lines_keys[key] = [value]
+
+            bot_data.save()
+            await message.reply(f"Added line to {key}: {value}")
+        else:
+            await message.reply("Invalid format. Use /add_line <key> <value>")
+    else:
+        await message.reply("Please provide a key and a value. Example: /add_line key Smth")

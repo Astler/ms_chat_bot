@@ -18,6 +18,7 @@ class GroupInfo(Serializable):
     def __init__(self, chat_id):
         self.chat_id = chat_id
         self.debug = False
+        self.delay = 2
         self.aggressive_selection = False
         self.registered_users = []
 
@@ -45,7 +46,10 @@ class GroupInfo(Serializable):
         push_git_data(path_file, self)
 
     async def get_all_unmarked_users(self, today) -> list:
-        all_in_chat = await self.get_non_bot_chat_members()
+        all_available_users_in_chat = await self.get_available_non_bot_chat_members()
+
+        if self.debug:
+            return all_available_users_in_chat
 
         marked_users = set()
 
@@ -58,11 +62,11 @@ class GroupInfo(Serializable):
         if today in self.anime_guys:
             marked_users.add(self.anime_guys[today])
 
-        unmarked_users = [member for member in all_in_chat if str(member.user.id) not in marked_users]
+        unmarked_users = [member for member in all_available_users_in_chat if str(member.user.id) not in marked_users]
 
         return unmarked_users
 
-    async def get_non_bot_chat_members(self):
+    async def get_available_non_bot_chat_members(self):
         non_bot_members = []
 
         if self.aggressive_selection:
@@ -101,6 +105,7 @@ class GroupInfo(Serializable):
         info.debug = json_dct.get("debug", info.debug)
         info.aggressive_selection = json_dct.get("aggressive_selection", info.aggressive_selection)
         info.registered_users = json_dct.get("registered_users", info.registered_users)
+        info.delay = json_dct.get("delay", info.delay)
 
         return info
 

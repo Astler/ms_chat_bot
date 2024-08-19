@@ -4,7 +4,7 @@ from datetime import date
 
 from aiogram.types import Message
 
-from loader import pyro_client, main_bot
+from loader import pyro_client, main_bot, locks
 from utils.data.bot_data import BotData
 from utils.data.group_data import GroupInfo
 from utils.data.user_data import UserData
@@ -18,6 +18,11 @@ async def send_typing_messages(chat_id, messages):
 
 
 async def detect_template(chat_id: int, title: str, data_selector, increment, skip_if_exist: bool = False):
+    if title in locks and locks[title]:
+        return
+
+    locks[title] = True
+
     today = str(date.today())
     group_data = GroupInfo.load(chat_id)
 
@@ -49,8 +54,16 @@ async def detect_template(chat_id: int, title: str, data_selector, increment, sk
 
     possible_messages = BotData.load().get_lines(group_data.lines_key)
 
+    if len(possible_messages) < 5:
+        for i in range(5 - len(possible_messages)):
+            if len(possible_messages) == 0:
+                possible_messages.append("NULL!!!")
+                continue
+
+            possible_messages.append(possible_messages[-1])
+
     selected_messages = random.sample(possible_messages, 4)
-    messages = [(msg, 1) for msg in selected_messages]
+    messages = [(msg, group_data.delay) for msg in selected_messages]
     messages.append((f"Всё, теперь очевидно. Сегодня {title}...", 1))
 
     await send_typing_messages(chat_id, messages)
@@ -68,6 +81,7 @@ async def detect_template(chat_id: int, title: str, data_selector, increment, sk
                                 parse_mode="Markdown")
 
     group_data.save()
+    locks[title] = False
 
 
 async def detect_stats_template(message: Message, title: str, selector):
