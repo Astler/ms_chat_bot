@@ -4,7 +4,7 @@ from datetime import date
 
 from aiogram.types import Message
 
-from loader import pyro_client, main_bot, locks
+from loader import pyro_client, main_bot
 from utils.data.bot_data import BotData
 from utils.data.group_data import GroupInfo
 from utils.data.user_data import UserData
@@ -18,13 +18,11 @@ async def send_typing_messages(chat_id, messages):
 
 
 async def detect_template(chat_id: int, title: str, data_selector, increment, skip_if_exist: bool = False):
-    if title in locks and locks[title]:
-        return
-
-    locks[title] = True
-
     today = str(date.today())
     group_data = GroupInfo.load(chat_id)
+
+    if title in group_data.locks and group_data.locks[title]:
+        return
 
     data_set: dict = data_selector(group_data)
 
@@ -51,6 +49,8 @@ async def detect_template(chat_id: int, title: str, data_selector, increment, sk
             return
         await main_bot.send_message(chat_id, "We have no one to choose from!")
         return
+
+    group_data.locks[title] = True
 
     possible_messages = BotData.load().get_lines(group_data.lines_key)
 
@@ -81,7 +81,7 @@ async def detect_template(chat_id: int, title: str, data_selector, increment, sk
                                 parse_mode="Markdown")
 
     group_data.save()
-    locks[title] = False
+    group_data.locks[title] = False
 
 
 async def detect_stats_template(message: Message, title: str, selector):

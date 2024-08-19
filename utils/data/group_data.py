@@ -21,6 +21,7 @@ class GroupInfo(Serializable):
         self.delay = 2
         self.aggressive_selection = False
         self.registered_users = []
+        self.locks = {}
 
         self.users = {}
         self.pidors = {}
@@ -106,6 +107,7 @@ class GroupInfo(Serializable):
         info.aggressive_selection = json_dct.get("aggressive_selection", info.aggressive_selection)
         info.registered_users = json_dct.get("registered_users", info.registered_users)
         info.delay = json_dct.get("delay", info.delay)
+        info.locks = json_dct.get("locks", info.locks)
 
         return info
 
