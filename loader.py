@@ -8,6 +8,8 @@ from pyrogram import Client
 from data import config
 from filters.is_admin import AdminFilter
 
+cached_groups = {}
+
 github = Github(config.GITHUB_TOKEN)
 repository = github.get_user().get_repo(config.GITHUB_REPO)
 

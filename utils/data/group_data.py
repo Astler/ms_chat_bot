@@ -2,6 +2,7 @@ from cat.json.serializable import Serializable
 from cat.utils.files_utils import save_local_json
 from cat.utils.git_utils import get_cached_git, push_git_data
 from data.to_export import bot_folder
+from loader import cached_groups
 from utils.data.user_data import UserData
 
 
@@ -113,5 +114,10 @@ class GroupInfo(Serializable):
 
     @staticmethod
     def load(chat_id: int) -> 'GroupInfo':
+        if chat_id in cached_groups:
+            return cached_groups[chat_id]
+
         file = get_group_file(chat_id)
-        return get_cached_git(file, GroupInfo.from_json_str, GroupInfo.from_json, {"chat_id": chat_id})
+        group_data = get_cached_git(file, GroupInfo.from_json_str, GroupInfo.from_json, {"chat_id": chat_id})
+        cached_groups[chat_id] = group_data
+        return group_data
