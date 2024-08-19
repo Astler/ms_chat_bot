@@ -11,8 +11,3 @@ tech_router = Router()
 async def get_chat_id(message: types.Message):
     await message.delete()
     await message.answer(str(message.chat.id))
-
-
-@tech_router.message(Command(commands=["sticker_id", "id"]), IsGroup(), is_admin_filter)
-async def get_sticker_id(message: types.Message):
-    await message.delete()

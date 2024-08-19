@@ -1,5 +1,3 @@
-from typing import Callable, Any
-
 from github import GithubException
 
 from cat.json.serializable import Serializable
@@ -18,7 +16,10 @@ def push_git_data(file_path: str, serializable: Serializable):
         repository.create_file(file_path, f"info: {file_path}", json_str)
 
 
-def get_cached_git(path_to_file: str, from_str_func):
+def get_cached_git(path_to_file: str, from_str_func, from_dict_func, fallback_dict=None):
+    if fallback_dict is None:
+        fallback_dict = {}
+
     try:
         file = repository.get_contents(path_to_file)
         contents = file.decoded_content.decode()
@@ -26,10 +27,10 @@ def get_cached_git(path_to_file: str, from_str_func):
         if len(contents) != 0:
             data = from_str_func(contents)
         else:
-            data = from_str_func(json_str=None)
+            data = from_dict_func(fallback_dict)
 
     except GithubException:
-        data = from_str_func(json_str=None)
+        data = from_dict_func(fallback_dict)
         push_git_data(path_to_file, data)
 
     save_local_json(path_to_file, data)

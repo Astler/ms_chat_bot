@@ -155,3 +155,6 @@ dmypy.json
 /product_bot_data.json
 /.idea/dataSources.local.xml
 /.idea/dataSources.xml
+/.idea/
+/product_groups_v2/
+/product_bot_data_v2.json

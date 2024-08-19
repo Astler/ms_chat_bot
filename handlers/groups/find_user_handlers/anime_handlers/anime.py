@@ -2,7 +2,6 @@ from aiogram import types, Router
 from aiogram.filters import Command
 
 from handlers.groups.find_user_handlers.find_user_common import detect_template, detect_stats_template
-from utils.data.group_data import get_group_data, save_group_data
 
 anime_router = Router()
 

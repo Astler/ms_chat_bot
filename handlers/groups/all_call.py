@@ -7,7 +7,7 @@ from utils.misc.common import create_user_mention
 all_router = Router()
 
 
-@all_router.message(Command(commands=["members", "abroad"]))
+@all_router.message(Command(commands=["call", "all"]))
 async def users_in_this_chat(message: types.Message, bot: Bot):
     all_in_chat = []
 

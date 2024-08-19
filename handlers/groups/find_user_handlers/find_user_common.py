@@ -5,23 +5,10 @@ from datetime import date
 from aiogram.types import Message
 
 from loader import pyro_client, main_bot
-from utils.data.group_data import save_group_data, get_group_data, GroupInfo
+from utils.data.bot_data import BotData
+from utils.data.group_data import GroupInfo
 from utils.data.user_data import UserData
 from utils.misc.common import create_user_mention
-from utils.misc.resources import possible_messages
-
-
-async def get_non_bot_chat_members(chat_id):
-    non_bot_members = []
-    try:
-        from loader import pyro_client
-        async for member in pyro_client.get_chat_members(int(chat_id)):
-            if not member.user.is_bot:
-                non_bot_members.append(member)
-    except Exception as e:
-        print(f"An error occurred while retrieving chat members: {e}")
-
-    return non_bot_members
 
 
 async def send_typing_messages(chat_id, messages):
@@ -30,28 +17,9 @@ async def send_typing_messages(chat_id, messages):
         await asyncio.sleep(delay)
 
 
-async def get_all_unmarked_users(today, group_data, chat_id) -> list:
-    all_in_chat = await get_non_bot_chat_members(chat_id)
-
-    marked_users = set()
-
-    if today in group_data.handsome_mens:
-        marked_users.add(group_data.handsome_mens[today])
-
-    if today in group_data.pidors:
-        marked_users.add(group_data.pidors[today])
-
-    if today in group_data.anime_guys:
-        marked_users.add(group_data.anime_guys[today])
-
-    unmarked_users = [member for member in all_in_chat if str(member.user.id) not in marked_users]
-
-    return unmarked_users
-
-
 async def detect_template(chat_id: int, title: str, data_selector, increment, skip_if_exist: bool = False):
     today = str(date.today())
-    group_data = get_group_data(chat_id)
+    group_data = GroupInfo.load(chat_id)
 
     data_set: dict = data_selector(group_data)
 
@@ -59,19 +27,27 @@ async def detect_template(chat_id: int, title: str, data_selector, increment, sk
         if skip_if_exist:
             return
 
-        user_mention = create_user_mention(await main_bot.get_chat_member(chat_id, data_set[today]))
-        await main_bot.send_message(chat_id, f"Сегодняшний ({today}) {title} уже определён! Это {user_mention}",
-                                    parse_mode="Markdown")
+        if group_data.debug:
+            await main_bot.send_message(chat_id, f"Игнорируем предыдущий результат отладкой", parse_mode="Markdown")
+        else:
+            user_mention = create_user_mention(await main_bot.get_chat_member(chat_id, data_set[today]))
+            await main_bot.send_message(chat_id, f"Сегодняшний ({today}) {title} уже определён! Это {user_mention}",
+                                        parse_mode="Markdown")
 
-        return
+            return
 
     users = group_data.users
 
-    all_in_chat = await get_all_unmarked_users(today, group_data, chat_id)
+    all_in_chat = await group_data.get_all_unmarked_users(today)
 
     if len(all_in_chat) == 0:
-        await main_bot.send_message(chat_id, "Сегодня без титула никто не остался!")
+        if not group_data.aggressive_selection and len(group_data.registered_users) == 0:
+            await main_bot.send_message(chat_id, "Aggressive mode is off and no one is registered!")
+            return
+        await main_bot.send_message(chat_id, "We have no one to choose from!")
         return
+
+    possible_messages = BotData.load().get_lines(group_data.lines_key)
 
     selected_messages = random.sample(possible_messages, 4)
     messages = [(msg, 1) for msg in selected_messages]
@@ -91,13 +67,12 @@ async def detect_template(chat_id: int, title: str, data_selector, increment, sk
                                 f"Это {create_user_mention(await main_bot.get_chat_member(chat_id, user_id))}!",
                                 parse_mode="Markdown")
 
-    save_group_data(chat_id, group_data)
+    group_data.save()
 
 
 async def detect_stats_template(message: Message, title: str, selector):
     chat_id = message.chat.id
-
-    group_data = get_group_data(chat_id)
+    group_data = GroupInfo.load(chat_id)
 
     if len(group_data.users) == 0:
         await message.reply(f"Таких пока нет!", parse_mode="Markdown")
