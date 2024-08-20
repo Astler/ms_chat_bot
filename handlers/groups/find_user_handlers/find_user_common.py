@@ -6,7 +6,7 @@ from aiogram.types import Message
 
 from loader import pyro_client, main_bot
 from utils.data.bot_data import BotData
-from utils.data.group_data import GroupInfo
+from utils.data.group_data import SpecificChatData
 from utils.data.user_data import UserData
 from utils.misc.common import create_user_mention
 
@@ -19,7 +19,7 @@ async def send_typing_messages(chat_id, messages):
 
 async def detect_template(chat_id: int, title: str, data_selector, increment, skip_if_exist: bool = False):
     today = str(date.today())
-    group_data = GroupInfo.load(chat_id)
+    group_data = SpecificChatData.load(chat_id)
 
     data_set: dict = data_selector(group_data)
 
@@ -83,7 +83,7 @@ async def detect_template(chat_id: int, title: str, data_selector, increment, sk
 
 async def detect_stats_template(message: Message, title: str, selector):
     chat_id = message.chat.id
-    group_data = GroupInfo.load(chat_id)
+    group_data = SpecificChatData.load(chat_id)
 
     if len(group_data.users) == 0:
         await message.reply(f"Таких пока нет!", parse_mode="Markdown")

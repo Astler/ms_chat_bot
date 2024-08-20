@@ -11,7 +11,7 @@ async def handsome(message: types.Message):
     await detect_handsome(message.chat.id)
 
 
-async def detect_handsome(chat_id: int, skip_if_exist: bool = False):
+async def detect_handsome(chat_id: int, skip_if_exist: bool = False, on_completed = None):
     def increment(group_data, user, handsome_mens):
         user.increment_handsome_counter()
         group_data.handsome_mens = handsome_mens
@@ -20,6 +20,9 @@ async def detect_handsome(chat_id: int, skip_if_exist: bool = False):
         return group_data.handsome_mens
 
     await detect_template(chat_id, "красавчик", data_selector, increment, skip_if_exist)
+
+    if on_completed is not None:
+        await on_completed()
 
 
 @handsome_router.message(Command(commands=["handsome_stats", "hs"]))

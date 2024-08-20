@@ -1,3 +1,5 @@
+from datetime import date
+
 from cat.json.serializable import Serializable
 from cat.utils.files_utils import save_local_json
 from cat.utils.git_utils import get_cached_git, push_git_data
@@ -10,16 +12,17 @@ def get_group_file(group_id: int):
     return f"{bot_folder}/{group_id}.json"
 
 
-class GroupInfo(Serializable):
+class SpecificChatData(Serializable):
 
     @staticmethod
     def instance(json_dct: dict):
-        return GroupInfo(json_dct["chat_id"])
+        return SpecificChatData(json_dct["chat_id"])
 
     def __init__(self, chat_id):
         self.chat_id = chat_id
         self.debug = False
         self.delay = 2
+        self.last_auto_day = ""
         self.aggressive_selection = False
         self.registered_users = []
         self.locks = {}
@@ -90,7 +93,7 @@ class GroupInfo(Serializable):
 
     @staticmethod
     def from_json(json_dct: dict):
-        info = GroupInfo(json_dct["chat_id"])
+        info = SpecificChatData(json_dct["chat_id"])
 
         raw_users: dict = json_dct.get("users", info.users)
         users = {}
@@ -109,15 +112,23 @@ class GroupInfo(Serializable):
         info.registered_users = json_dct.get("registered_users", info.registered_users)
         info.delay = json_dct.get("delay", info.delay)
         info.locks = json_dct.get("locks", info.locks)
+        info.last_auto_day = json_dct.get("last_auto_day", info.last_auto_day)
 
         return info
 
     @staticmethod
-    def load(chat_id: int) -> 'GroupInfo':
+    def load(chat_id: int) -> 'SpecificChatData':
         if chat_id in cached_groups:
             return cached_groups[chat_id]
 
         file = get_group_file(chat_id)
-        group_data = get_cached_git(file, GroupInfo.from_json_str, GroupInfo.from_json, {"chat_id": chat_id})
+        group_data = get_cached_git(file, SpecificChatData.from_json_str, SpecificChatData.from_json, {"chat_id": chat_id})
         cached_groups[chat_id] = group_data
         return group_data
+
+    def is_today_auto_performed(self):
+        today = str(date.today())
+        return self.last_auto_day == today
+
+    def track_morning(self):
+        self.last_auto_day = str(date.today())

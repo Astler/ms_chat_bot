@@ -4,7 +4,7 @@ from aiogram.filters import CommandObject, Command
 from filters import IsGroup
 from loader import is_admin_filter
 from utils.data.bot_data import BotData
-from utils.data.group_data import GroupInfo
+from utils.data.group_data import SpecificChatData
 
 lines_router = Router()
 
@@ -13,7 +13,7 @@ lines_router = Router()
 async def lines_command(message: types.Message, command: CommandObject):
     chat_id = message.chat.id
     bot_data = BotData.load()
-    group_data = GroupInfo.load(chat_id)
+    group_data = SpecificChatData.load(chat_id)
 
     if command.args:
         action = command.args.lower()

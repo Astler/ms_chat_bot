@@ -13,7 +13,6 @@ async def auto_command(message: types.Message, command: CommandObject):
     chat_id = message.chat.id
     bot_data = BotData.load()
 
-    # Check if the command has arguments
     if command.args:
         action = command.args.lower()
 

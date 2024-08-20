@@ -11,7 +11,7 @@ async def anime(message: types.Message):
     await detect_anime(message.chat.id)
 
 
-async def detect_anime(chat_id: int, skip_if_exist: bool = False):
+async def detect_anime(chat_id: int, skip_if_exist: bool = False, on_completed = None):
     def increment(group_data, user, anime_guys):
         user.increment_anime_counter()
         group_data.anime_guys = anime_guys
@@ -21,6 +21,8 @@ async def detect_anime(chat_id: int, skip_if_exist: bool = False):
 
     await detect_template(chat_id, "анимешник", data_selector, increment, skip_if_exist)
 
+    if on_completed is not None:
+        await on_completed()
 
 @anime_router.message(Command(commands=["anime_stats", "as"]))
 async def anime_stats(message: types.Message):

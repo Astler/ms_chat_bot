@@ -1,18 +1,20 @@
 import random
+import re
 
-from aiogram import types
+from aiogram import types, Router
 
-from filters.random_item_filter import RandomItemFilter
-from loader import main_router
+from data.config import BOT_NAMES
+from filters.or_filter import RandomItemFilter
 
+random_router = Router()
 
-@main_router.message(RandomItemFilter())
+@random_router.message(RandomItemFilter())
 async def bot_choose(message: types.Message):
-    msg_text = str(message.text).replace("?", "")[3:].strip()
+    msg_text = str(message.text).replace("?", "")
 
-    if msg_text.startswith(","):
-        msg_text = msg_text[2:]
+    pattern = r'^\s*(?:' + '|'.join(re.escape(name) for name in BOT_NAMES) + r')\s*,?\s*'
+    msg_text = re.sub(pattern, '', msg_text, flags=re.IGNORECASE)
 
-    variants = msg_text.strip().split(" или ")
+    variants = re.split(r'\s+или\s+', msg_text.strip())
 
     await message.reply(f"{random.choice(variants)}")

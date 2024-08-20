@@ -4,6 +4,8 @@ import logging
 import sys
 
 from data.config import TRIGGER_HOURS
+from handlers.groups.find_user_handlers.anime_handlers.anime import detect_anime
+from handlers.groups.find_user_handlers.handsome_handlers.handsome import detect_handsome
 from loader import *
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -11,8 +13,9 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from handlers.groups.find_user_handlers.pidor_handlers.pidor import detect_pidor, pidor_router
 from utils import on_startup_notify
 from utils.data.bot_data import BotData
+from utils.data.group_data import SpecificChatData
+from utils.notify_admins import send_msg_to_admin
 from utils.set_bot_commands import set_default_commands
-
 
 
 async def on_startup():
@@ -24,14 +27,33 @@ async def on_startup():
 
 
 async def combined_print():
-    print("combined_print")
     bot_data = BotData.load()
-    for chatId in bot_data.chats_to_notify:
-        try:
-            await detect_pidor(chatId, skip_if_exist=True)
-            await main_bot.send_message(chatId, "Morning sunshine! 🌞")
-        except Exception as e:
-            logging.error(f"Error occurred while sending morning message to chat {chatId}: {e}")
+    for chat_id in bot_data.chats_to_notify:
+        await morning_message(chat_id)
+
+
+async def morning_message(chat_id):
+    try:
+        group_data = SpecificChatData.load(chat_id)
+
+        if group_data.is_today_auto_performed():
+            return
+
+        async def on_handsome_completed():
+            await main_bot.send_message(chat_id, "Morning sunshine! 🌞")
+
+        async def on_anime_completed():
+            await detect_handsome(chat_id, skip_if_exist=True, on_completed=on_handsome_completed)
+
+        async def on_pidor_completed():
+            await detect_anime(chat_id, skip_if_exist=True, on_completed=on_anime_completed)
+
+        await detect_pidor(chat_id, skip_if_exist=True, on_completed=on_pidor_completed)
+
+        group_data.track_morning()
+        group_data.save()
+    except Exception as e:
+        await send_msg_to_admin(msg=f"Error occurred while sending morning message to chat {chat_id}: {e}")
 
 
 def start_scheduler():
@@ -73,26 +95,31 @@ async def main():
 
     main_dispatcher.startup.register(on_startup)
 
+    from handlers.groups.aggressive_mode import aggressive_selection_router
     from handlers.groups.auto import auto_router
     from handlers.groups.debug import debug_router
     from handlers.groups.lines import lines_router
     from handlers.groups.group_id import tech_router
+    from handlers.common.choose_random_item import random_router
     from handlers.private.private_help import help_router
     from handlers.private.private_id import id_router
     from handlers.groups.all_call import all_router
     from handlers.groups.register import register_router
     from handlers.groups.find_user_handlers.anime_handlers.anime import anime_router
     from handlers.groups.find_user_handlers.handsome_handlers.handsome import handsome_router
+
     main_dispatcher.include_routers(
         main_router,
         auto_router,
         tech_router,
         handsome_router,
         pidor_router,
+        aggressive_selection_router,
         all_router,
         debug_router,
         lines_router,
         anime_router,
+        random_router,
         register_router,
         help_router,
         id_router

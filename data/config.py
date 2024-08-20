@@ -21,6 +21,7 @@ BANNERS_MAP_FILE = os.getenv('BANNERS_MAP_FILE')
 BE_VERSIONS_FILE = os.getenv('BE_VERSIONS_FILE')
 APPS_DATA_ROOT_URL = os.getenv('APPS_DATA_ROOT_URL')
 
+BOT_NAMES = "Bot|Бот|bot|бот".split("|")
 ######
 # FB #
 ######

@@ -11,7 +11,7 @@ async def pidor(message: types.Message):
     await detect_pidor(message.chat.id)
 
 
-async def detect_pidor(chat_id: int, skip_if_exist: bool = False):
+async def detect_pidor(chat_id: int, skip_if_exist: bool = False, on_completed = None):
     def increment(group_data, user, pidors):
         user.increment_pidor_counter()
         group_data.pidors = pidors
@@ -21,6 +21,8 @@ async def detect_pidor(chat_id: int, skip_if_exist: bool = False):
 
     await detect_template(chat_id, "пидор", data_selector, increment, skip_if_exist)
 
+    if on_completed is not None:
+        await on_completed()
 
 @pidor_router.message(Command(commands=["pidor_stats", "ps"]))
 async def pidor_stats(message: types.Message):
