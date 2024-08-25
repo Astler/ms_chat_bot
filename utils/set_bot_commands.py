@@ -5,9 +5,11 @@ from loader import main_bot
 
 async def set_default_commands():
     await main_bot.set_my_commands([
-        BotCommand(command="abroad", description="Все на борт!"),
-        BotCommand(command="handsome", description="Красавчик дня"),
-        BotCommand(command="pidor", description="Пидор дня"),
-        BotCommand(command="handsome_stats", description="Статистика красавчиков"),
-        BotCommand(command="pidor_stats", description="Статистика пидоров"),
+        BotCommand(command="all", description="ABROAD!"),
+        BotCommand(command="p", description="πdor"),
+        BotCommand(command="h", description="Handsome"),
+        BotCommand(command="a", description="Anime"),
+        BotCommand(command="hs", description="Handsome stats"),
+        BotCommand(command="ps", description="π stats"),
+        BotCommand(command="ass", description="Anime stats"),
     ])

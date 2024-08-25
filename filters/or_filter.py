@@ -1,4 +1,4 @@
-from aiogram import types, Bot
+from aiogram import types
 from aiogram.filters import BaseFilter
 
 from data.config import BOT_NAMES

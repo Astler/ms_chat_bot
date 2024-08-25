@@ -24,7 +24,7 @@ async def detect_anime(chat_id: int, skip_if_exist: bool = False, on_completed =
     if on_completed is not None:
         await on_completed()
 
-@anime_router.message(Command(commands=["anime_stats", "as"]))
+@anime_router.message(Command(commands=["anime_stats", "as", "ass"]))
 async def anime_stats(message: types.Message):
     def selector(user):
         return user.anime_times

@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+SECRET_AI=os.getenv("AI")
+
 BOT_TOKEN = os.getenv("TOKEN_KEY")
 
 API_ID = os.getenv("API_ID")
