@@ -11,7 +11,7 @@ from loader import client
 from utils.data.group_data import SpecificChatData
 
 random_router = Router()
-messages = [ {"role": "system", "content": "You are a intelligent assistant."} ]
+messages = [ {"role": "system", "content": "You are a crazy assistant."} ]
 
 @random_router.message(RandomItemFilter())
 async def bot_choose(message: types.Message):

@@ -1,9 +1,15 @@
 import asyncio
 import datetime
 import logging
+import os
+import random
 import sys
 
+from aiogram.types import FSInputFile
+
 from data.config import TRIGGER_HOURS
+from data.strings import glados_morning_messages
+from handlers.common.ai_text_to_voice import text_to_voice
 from handlers.groups.find_user_handlers.anime_handlers.anime import detect_anime
 from handlers.groups.find_user_handlers.handsome_handlers.handsome import detect_handsome
 from loader import *
@@ -40,7 +46,20 @@ async def morning_message(chat_id):
             return
 
         async def on_handsome_completed():
-            await main_bot.send_message(chat_id, "Morning sunshine! 🌞")
+            await main_bot.send_message(chat_id, "Morning!")
+
+            glados_message = random.choice(glados_morning_messages)
+
+            audio_content = await text_to_voice(glados_message, "glados")
+
+            if audio_content:
+                with open("morning_message.mp3", "wb") as audio_file:
+                    audio_file.write(audio_content)
+                audio = FSInputFile("morning_message.mp3")
+                await main_bot.send_voice(chat_id, audio)
+                os.remove("morning_message.mp3")
+            else:
+                await main_bot.send_message(chat_id, glados_message)
 
         async def on_anime_completed():
             await detect_handsome(chat_id, skip_if_exist=True, on_completed=on_handsome_completed)
@@ -101,6 +120,7 @@ async def main():
     from handlers.groups.lines import lines_router
     from handlers.groups.group_id import tech_router
     from handlers.common.choose_random_item import random_router
+    from handlers.common.ai_text_to_voice import text_to_voice_router
     from handlers.private.private_help import help_router
     from handlers.private.private_id import id_router
     from handlers.groups.all_call import all_router
@@ -120,6 +140,7 @@ async def main():
         lines_router,
         anime_router,
         random_router,
+        text_to_voice_router,
         register_router,
         help_router,
         id_router
