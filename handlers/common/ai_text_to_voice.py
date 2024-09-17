@@ -9,6 +9,7 @@ import json
 import os
 
 from data.strings import glados_morning_messages
+from utils.notify_admins import send_msg_to_admin
 
 text_to_voice_router = Router()
 
@@ -96,11 +97,11 @@ async def text_to_voice(text: str, voice: str = "glados") -> Optional[bytes]:
 
         if response.headers.get('Content-Type') == 'application/json':
             error_data = response.json()
-            print(f"Error: {error_data.get('message', 'Unknown error occurred')}")
+            await send_msg_to_admin(msg=f"Fish Audio Error: {error_data.get('message', 'Unknown error occurred')}")
             return None
         else:
             return response.content
 
     except requests.RequestException as e:
-        print(f"An error occurred while processing your request: {str(e)}")
+        await send_msg_to_admin(msg=f"Fish Audio Error: An error occurred while processing your request: {str(e)}")
         return None
